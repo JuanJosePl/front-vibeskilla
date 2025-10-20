@@ -14,15 +14,15 @@ export const authService = {
     return response
   },
 
-  // Obtener perfil del usuario
+  // Obtener perfil del usuario - CORREGIDO
   async getProfile(token) {
-    const response = await apiClient.get(API_ENDPOINTS.AUTH.PROFILE, token)
+    const response = await apiClient.get(API_ENDPOINTS.AUTH.PROFILE, null, token) // Cambio aquí
     return response
   },
 
-  // Actualizar perfil
+  // Actualizar perfil - CORREGIDO
   async updateProfile(userData, token) {
-    const response = await apiClient.put(API_ENDPOINTS.AUTH.UPDATE_PROFILE, userData, token)
+    const response = await apiClient.put(API_ENDPOINTS.AUTH.UPDATE_PROFILE, userData, token) // Ya está correcto
     return response
   }
 }

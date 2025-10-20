@@ -16,6 +16,7 @@ class ApiClient {
     // Si hay body, convertir a JSON
     if (config.body && typeof config.body === 'object') {
       config.body = JSON.stringify(config.body)
+      config.headers['Content-Type'] = 'application/json'
     }
 
     // Agregar timeout
@@ -53,10 +54,12 @@ class ApiClient {
     }
   }
 
-  async get(endpoint, token = null) {
+  // CORREGIDO: Métodos más claros
+  async get(endpoint, data = null, token = null) {
     return this.request(endpoint, {
       method: 'GET',
-      headers: getHeaders(token)
+      headers: getHeaders(token),
+      body: data // Para GET normalmente es null, pero por consistencia
     })
   }
 

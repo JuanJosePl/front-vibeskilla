@@ -3,20 +3,20 @@ export const API_CONFIG = {
   BASE_URL: 'https://backend-vibeskilla.onrender.com/api',
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3
-}
+};
 
 // Headers comunes
 export const getHeaders = (token = null) => {
   const headers = {
     'Content-Type': 'application/json',
-  }
+  };
   
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`
+    headers['Authorization'] = `Bearer ${token}`;
   }
   
-  return headers
-}
+  return headers;
+};
 
 // Endpoints de la API
 export const API_ENDPOINTS = {
@@ -27,8 +27,8 @@ export const API_ENDPOINTS = {
     PROFILE: '/auth/profile',
     UPDATE_PROFILE: '/auth/profile'
   },
-  
-  // Products
+
+  // Products públicos
   PRODUCTS: {
     LIST: '/products',
     FEATURED: '/products/featured',
@@ -36,13 +36,25 @@ export const API_ENDPOINTS = {
     BY_SLUG: '/products',
     REVIEWS: '/products'
   },
-  
+
+  // Admin
+  ADMIN: {
+    DASHBOARD: {
+      STATS: '/admin/dashboard/stats',
+      SALES: '/admin/dashboard/sales'
+    },
+    PRODUCTS: '/admin/products',
+    CATEGORIES: '/admin/categories',
+    ORDERS: '/admin/orders',
+    USERS: '/admin/users'
+  },
+
   // Categories
   CATEGORIES: {
     LIST: '/categories',
     BY_SLUG: '/categories'
   },
-  
+
   // Cart
   CART: {
     GET: '/cart',
@@ -52,7 +64,7 @@ export const API_ENDPOINTS = {
     CLEAR: '/cart',
     APPLY_COUPON: '/cart/coupon'
   },
-  
+
   // Orders
   ORDERS: {
     CREATE: '/orders',
@@ -60,9 +72,9 @@ export const API_ENDPOINTS = {
     BY_ID: '/orders',
     CANCEL: '/orders'
   },
-  
+
   // Payments
   PAYMENTS: {
     PROCESS: '/payments/process'
   }
-}
+};
