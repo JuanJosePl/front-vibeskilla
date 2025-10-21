@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { PageLayout } from "../../components/page-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import  categoryService  from "../../src/services/categoryService";
-import { useScrollToTop } from "../hooks/use-scroll-to-top";
+import { useScrollToTop } from "../../hooks/use-scroll-to-top";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
