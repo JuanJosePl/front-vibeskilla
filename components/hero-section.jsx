@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-import { productService } from "../services/productService";
+import { productService } from "../src/services/productService";
 import { useScrollToTop } from "../hooks/use-scroll-to-top";
 
 export function HeroSection() {
