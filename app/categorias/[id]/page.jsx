@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Filter, Grid, List } from "lucide-react";
-import { PageLayout } from "../components/page-layout";
 import { ProductCard } from "../components/product-card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { categoryService } from "../services/categoryService";
 import { useScrollToTop } from "../hooks/use-scroll-to-top";
+import { PageLayout } from "../../../components/page-layout";
 
 export default function CategoryDetailPage() {
   const { id } = useParams();
