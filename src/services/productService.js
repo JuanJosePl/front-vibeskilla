@@ -72,7 +72,7 @@ export const productService = {
   async getRelatedProducts(productId, categoryId, limit = 4) {
     try {
       const response = await apiClient.get(
-        `/api/products/related/${productId}?category=${categoryId}&limit=${limit}`
+        `/products/related/${productId}?category=${categoryId}&limit=${limit}`
       );
       return response;
     } catch (error) {
