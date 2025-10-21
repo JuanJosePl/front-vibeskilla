@@ -1,5 +1,5 @@
 // services/categoryService.js
-import { Client } from './api';
+import { apiClient } from './api';
 
 export const categoryService = {
   /**
