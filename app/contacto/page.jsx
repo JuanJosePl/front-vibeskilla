@@ -20,7 +20,6 @@ import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import { Button } from "../../components/ui/button";
 import { useContactForm } from "../../src/hooks/useContactForm";
-import { Alert, AlertDescription } from "../../components/ui/alert";
 
 export default function ContactPage() {
   const {
@@ -170,9 +169,9 @@ export default function ContactPage() {
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     {error && (
-                      <Alert variant="destructive">
-                        <AlertDescription>{error}</AlertDescription>
-                      </Alert>
+                      <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                        {error}
+                      </div>
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -247,13 +246,10 @@ export default function ContactPage() {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full btn-primary"
+                      className="w-full"
                     >
                       {isSubmitting ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Enviando...
-                        </>
+                        "Enviando..."
                       ) : (
                         <>
                           <Send className="h-4 w-4 mr-2" />
