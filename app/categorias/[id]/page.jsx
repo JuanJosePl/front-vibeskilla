@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Filter, Grid, List, Star, Zap } from "lucide-react";
 import { ProductCard } from "../../../components/product-card";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
 import categoryService from "../../../src/services/categoryService";
 import { useScrollToTop } from "../../../hooks/use-scroll-to-top";
