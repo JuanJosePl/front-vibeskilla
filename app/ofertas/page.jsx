@@ -1,11 +1,11 @@
 // pages/offers-page.jsx
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ProductCard } from "../components/product-card";
-import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
-import { productService } from "../services/productService";
-import { useScrollToTop } from "../hooks/use-scroll-to-top";
+import { ProductCard } from "../../components/product-card";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import { productService } from "../../src/services/productService";
+import { useScrollToTop } from "../../hooks/use-scroll-to-top";
 import { PageLayout } from "../../components/page-layout";
 
 export default function OffersPage() {

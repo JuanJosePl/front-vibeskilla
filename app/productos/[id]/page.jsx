@@ -15,15 +15,15 @@ import {
   Zap,
 } from "lucide-react";
 
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
-import { ProductCard } from "../../components/product-card";
+import { Button } from "../../../components/ui/button";
+import { Badge } from "../../../components/ui/badge";
+import { ProductCard } from "../../../components/product-card";
 import { useCart } from "../../hooks/use-cart";
-import { useAuth } from "../../contexts/AuthContext";
-import { useToast } from "../../hooks/use-toast";
-import { productService } from "../../services/productService";
-import { formatPrice } from "../../lib/utils";
-import { useScrollToTop } from "../../hooks/use-scroll-to-top";
+import { useAuth } from "../../../src/contexts/AuthContext";
+import { useToast } from "../../../hooks/use-toast";
+import { productService } from "../../../src/services/productService";
+import { formatPrice } from "../../../lib/utils";
+import { useScrollToTop } from "../../../hooks/use-scroll-to-top";
 import { PageLayout } from "../../../components/page-layout";
 
 export default function ProductDetailPage() {
