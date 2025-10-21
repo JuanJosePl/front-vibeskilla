@@ -1,6 +1,9 @@
+// App.jsx
+import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "../hooks/use-cart.jsx";
-import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx"; // ✅ useAuth agregado correctamente
+import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx";
+import '../styles/animations.css'
 import Header from "../components/header";
 import Footer from "../components/footer";
 
@@ -39,7 +42,22 @@ import CreateCategory from "./admin/pages/Categories/Create";
 import EditCategory from "./admin/pages/Categories/Edit";
 import OrderDetails from "./admin/pages/Orders/Details";
 import EditUser from "./admin/pages/Users/Edit";
-import AdminNavbar from "./admin/components/layout/Navbar"; // ✅ asegúrate de tener este componente
+import AdminNavbar from "./admin/components/layout/Navbar";
+
+// Scroll handler component
+function ScrollToTop() {
+  const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    // Scroll suave al top en cada cambio de ruta
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, [pathname, search]);
+
+  return null;
+}
 
 function AppContent() {
   const { user } = useAuth();
@@ -50,6 +68,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col theme-transition">
+      {/* Componente de scroll automático */}
+      <ScrollToTop />
+      
       {/* Mostrar header público si no es ruta admin */}
       {!isAdminRoute && <Header />}
 
