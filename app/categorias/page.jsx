@@ -23,13 +23,10 @@ export default function CategoriesPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // Usar las categorías directamente de la base de datos
         const response = await categoryService.getCategories();
         if (response.success) {
           const activeCategories = response.data.filter((cat) => cat.isActive);
           setCategories(activeCategories);
-
-          // Separar categorías destacadas
           const featured = activeCategories.filter((cat) => cat.featured);
           setFeaturedCategories(featured);
         }
@@ -43,7 +40,6 @@ export default function CategoriesPage() {
     fetchCategories();
   }, []);
 
-  // Iconos para cada categoría basados en el nombre
   const getCategoryIcon = (categoryName) => {
     const icons = {
       Smartphones: "📱",
@@ -58,7 +54,6 @@ export default function CategoriesPage() {
     return icons[categoryName] || "📦";
   };
 
-  // Colores de gradiente para cada categoría
   const getCategoryGradient = (index) => {
     const gradients = [
       "from-blue-500/20 to-purple-600/20",
@@ -102,7 +97,6 @@ export default function CategoriesPage() {
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
         <div className="container mx-auto px-4 py-8">
-          {/* Header Mejorado */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl mb-6 backdrop-blur-sm">
               <Sparkles className="h-12 w-12 text-primary" />
@@ -117,7 +111,6 @@ export default function CategoriesPage() {
             </p>
           </div>
 
-          {/* Categorías Destacadas */}
           {featuredCategories.length > 0 && (
             <div className="mb-16">
               <div className="flex items-center justify-center gap-3 mb-8">
@@ -169,7 +162,6 @@ export default function CategoriesPage() {
             </div>
           )}
 
-          {/* Todas las Categorías */}
           <div className="mb-8">
             <h2 className="text-2xl lg:text-3xl font-bold text-center mb-8 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
               Todas las Categorías
@@ -181,13 +173,7 @@ export default function CategoriesPage() {
                   to={`/categorias/${category.slug}`}
                   className="block group"
                 >
-                  <Card
-                    className="h-full cursor-pointer transition-all duration-500 hover:shadow-2xl hover:scale-105 border-2 border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm overflow-hidden relative"
-                    style={{
-                      animationDelay: `${index * 0.1}s`,
-                    }}
-                  >
-                    {/* Imagen de fondo sutil */}
+                  <Card className="h-full cursor-pointer transition-all duration-500 hover:shadow-2xl hover:scale-105 border-2 border-border/50 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm overflow-hidden relative">
                     {category.image && (
                       <img
                         src={category.image}
@@ -231,7 +217,6 @@ export default function CategoriesPage() {
                       </div>
                     </CardContent>
 
-                    {/* Efectos de hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                   </Card>
@@ -240,7 +225,6 @@ export default function CategoriesPage() {
             </div>
           </div>
 
-          {/* Call to Action */}
           <div className="text-center mt-16 p-8 bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl border border-border/50 backdrop-blur-sm">
             <h3 className="text-2xl font-bold mb-4">
               ¿No encuentras lo que buscas?
@@ -251,9 +235,9 @@ export default function CategoriesPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/productos">
-                <Button className="btn-primary px-8 py-3 text-lg">
+                <button className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors text-lg">
                   Ver Todos los Productos
-                </Button>
+                </button>
               </Link>
               <a
                 href="https://wa.me/message/O4FKBMAABGC5L1"

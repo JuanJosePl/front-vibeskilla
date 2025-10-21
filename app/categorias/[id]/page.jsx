@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Filter, Grid, List, Star, Zap } from "lucide-react";
 import { ProductCard } from "../../../components/product-card";
-import { Button } from "../../../components/ui/button"
 import { Badge } from "../../../components/ui/badge";
 import categoryService from "../../../src/services/categoryService";
 import { useScrollToTop } from "../../../hooks/use-scroll-to-top";
@@ -30,13 +29,11 @@ export default function CategoryDetailPage() {
       try {
         setLoading(true);
         
-        // Usar slug para buscar la categoría
         const categoryResponse = await categoryService.getCategoryBySlug(id);
 
         if (categoryResponse.success) {
           setCategory(categoryResponse.data);
           
-          // Obtener productos de la categoría
           const productsResponse = await categoryService.getProductsByCategory(
             categoryResponse.data._id, 
             filters
@@ -61,7 +58,6 @@ export default function CategoryDetailPage() {
     fetchCategoryData();
   }, [id, filters]);
 
-  // Iconos para cada categoría
   const getCategoryIcon = (categoryName) => {
     const icons = {
       'Smartphones': '📱',
@@ -108,10 +104,14 @@ export default function CategoryDetailPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/categorias">
-                <Button className="btn-primary">Volver a categorías</Button>
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                  Volver a categorías
+                </button>
               </Link>
               <Link to="/productos">
-                <Button variant="outline">Explorar productos</Button>
+                <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                  Explorar productos
+                </button>
               </Link>
             </div>
           </div>
@@ -124,7 +124,6 @@ export default function CategoryDetailPage() {
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
         <div className="container mx-auto px-4 py-8">
-          {/* Breadcrumb Mejorado */}
           <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-8 flex-wrap">
             <Link to="/" className="hover:text-primary transition-colors font-medium">
               Inicio
@@ -139,7 +138,6 @@ export default function CategoryDetailPage() {
             </span>
           </div>
 
-          {/* Back Button */}
           <Link
             to="/categorias"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors group"
@@ -148,7 +146,6 @@ export default function CategoryDetailPage() {
             Volver a categorías
           </Link>
 
-          {/* Category Header Mejorado */}
           <div className="text-center mb-12 relative">
             <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl mb-6 backdrop-blur-sm">
               <span className="text-5xl">
@@ -187,7 +184,6 @@ export default function CategoryDetailPage() {
             </div>
           </div>
 
-          {/* View Controls Mejorados */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8 p-6 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50">
             <div className="flex items-center gap-4">
               <div className="text-sm text-muted-foreground font-medium">
@@ -209,29 +205,32 @@ export default function CategoryDetailPage() {
               </select>
 
               <div className="flex items-center gap-2 bg-background rounded-xl p-1 border border-border">
-                <Button
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                  size="sm"
+                <button
                   onClick={() => setViewMode('grid')}
-                  className="flex items-center gap-2"
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                    viewMode === 'grid' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
                 >
                   <Grid className="h-4 w-4" />
                   Grid
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
+                </button>
+                <button
                   onClick={() => setViewMode('list')}
-                  className="flex items-center gap-2"
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                    viewMode === 'list' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
                 >
                   <List className="h-4 w-4" />
                   Lista
-                </Button>
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Products Grid/List */}
           {products.length > 0 ? (
             <div className={`
               ${viewMode === 'grid' 
@@ -261,14 +260,14 @@ export default function CategoryDetailPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/categorias">
-                  <Button className="btn-primary">
+                  <button className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                     Explorar otras categorías
-                  </Button>
+                  </button>
                 </Link>
                 <Link to="/productos">
-                  <Button variant="outline">
+                  <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
                     Ver todos los productos
-                  </Button>
+                  </button>
                 </Link>
               </div>
             </div>
