@@ -1,51 +1,36 @@
-
-
-import { useState } from "react"
-import { MapPin, Phone, Mail, Clock, MessageCircle, Instagram, Send } from "lucide-react"
-import { PageLayout } from "../../components/page-layout"
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { Input } from "../../components/ui/input"
-import { Label } from "../../components/ui/label"
-import { Textarea } from "../../components/ui/textarea"
-import { Button } from "../../components/ui/button"
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  MessageCircle,
+  Instagram,
+  Send,
+  CheckCircle2,
+} from "lucide-react";
+import { PageLayout } from "../../components/page-layout";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Textarea } from "../../components/ui/textarea";
+import { Button } from "../../components/ui/button";
+import { useContactForm } from "../../hooks/useContactForm";
+import { Alert, AlertDescription } from "../../components/ui/alert";
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    setSubmitted(true)
-    setIsSubmitting(false)
-
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setSubmitted(false)
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      })
-    }, 3000)
-  }
+  const {
+    formData,
+    isSubmitting,
+    submitted,
+    error,
+    handleInputChange,
+    handleSubmit,
+  } = useContactForm();
 
   return (
     <PageLayout>
@@ -54,7 +39,8 @@ export default function ContactPage() {
         <div className="text-center mb-12">
           <h1 className="text-3xl lg:text-4xl font-bold mb-4">Contáctanos</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Estamos aquí para ayudarte. Contáctanos por cualquier medio y te responderemos lo más pronto posible.
+            Estamos aquí para ayudarte. Contáctanos por cualquier medio y te
+            responderemos lo más pronto posible.
           </p>
         </div>
 
@@ -62,7 +48,9 @@ export default function ContactPage() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold mb-6">Información de Contacto</h2>
+              <h2 className="text-2xl font-bold mb-6">
+                Información de Contacto
+              </h2>
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
                   <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -84,7 +72,10 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Teléfono</h3>
-                    <a href="tel:+573002521314" className="text-muted-foreground hover:text-primary transition-colors">
+                    <a
+                      href="tel:+573002521314"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
                       +57 300 252 1314
                     </a>
                   </div>
@@ -124,7 +115,7 @@ export default function ContactPage() {
             {/* Social Media */}
             <div>
               <h2 className="text-2xl font-bold mb-6">Síguenos</h2>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 flex-wrap gap-2">
                 <a
                   href="https://wa.me/message/O4FKBMAABGC5L1"
                   target="_blank"
@@ -166,21 +157,35 @@ export default function ContactPage() {
                 {submitted ? (
                   <div className="text-center py-8">
                     <div className="h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mx-auto mb-4">
-                      <Send className="h-8 w-8 text-green-600" />
+                      <CheckCircle2 className="h-8 w-8 text-green-600" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">¡Mensaje Enviado!</h3>
-                    <p className="text-muted-foreground">Gracias por contactarnos. Te responderemos pronto.</p>
+                    <h3 className="text-lg font-semibold mb-2">
+                      ¡Mensaje Enviado Exitosamente!
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Gracias por contactarnos. Hemos recibido tu mensaje y te
+                      responderemos dentro de las próximas 24 horas.
+                    </p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
+                    {error && (
+                      <Alert variant="destructive">
+                        <AlertDescription>{error}</AlertDescription>
+                      </Alert>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="name">Nombre *</Label>
                         <Input
                           id="name"
                           value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("name", e.target.value)
+                          }
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
                       <div>
@@ -189,7 +194,10 @@ export default function ContactPage() {
                           id="phone"
                           type="tel"
                           value={formData.phone}
-                          onChange={(e) => handleInputChange("phone", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("phone", e.target.value)
+                          }
+                          disabled={isSubmitting}
                         />
                       </div>
                     </div>
@@ -200,8 +208,11 @@ export default function ContactPage() {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("email", e.target.value)
+                        }
                         required
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -210,8 +221,11 @@ export default function ContactPage() {
                       <Input
                         id="subject"
                         value={formData.subject}
-                        onChange={(e) => handleInputChange("subject", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("subject", e.target.value)
+                        }
                         required
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -221,13 +235,31 @@ export default function ContactPage() {
                         id="message"
                         rows={5}
                         value={formData.message}
-                        onChange={(e) => handleInputChange("message", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("message", e.target.value)
+                        }
                         required
+                        disabled={isSubmitting}
+                        placeholder="Por favor, describe tu consulta o mensaje en detalle..."
                       />
                     </div>
 
-                    <Button type="submit" disabled={isSubmitting} className="w-full btn-primary">
-                      {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full btn-primary"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4 mr-2" />
+                          Enviar Mensaje
+                        </>
+                      )}
                     </Button>
                   </form>
                 )}
@@ -238,8 +270,12 @@ export default function ContactPage() {
 
         {/* Quick Contact Banner */}
         <div className="mt-16 bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 text-center text-white">
-          <h2 className="text-2xl font-bold mb-4">¿Necesitas ayuda inmediata?</h2>
-          <p className="text-lg opacity-90 mb-6">Contáctanos por WhatsApp para atención inmediata</p>
+          <h2 className="text-2xl font-bold mb-4">
+            ¿Necesitas ayuda inmediata?
+          </h2>
+          <p className="text-lg opacity-90 mb-6">
+            Contáctanos por WhatsApp para atención inmediata
+          </p>
           <a
             href="https://wa.me/message/O4FKBMAABGC5L1"
             target="_blank"
@@ -252,5 +288,5 @@ export default function ContactPage() {
         </div>
       </div>
     </PageLayout>
-  )
+  );
 }

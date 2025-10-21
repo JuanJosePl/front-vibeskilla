@@ -20,13 +20,19 @@ export const getHeaders = (token = null) => {
 
 // Endpoints de la API
 export const API_ENDPOINTS = {
-  //Categorias
-   CATEGORIES: {
+  // Contacto
+  CONTACT: {
+    SEND: '/contact/send',
+  },
+  
+  // Categorias
+  CATEGORIES: {
     BASE: '/categories',
     WITH_COUNT: '/categories/with-count',
     POPULAR: '/categories/popular',
     HIERARCHICAL: '/categories/hierarchical'
   },
+  
   // Auth
   AUTH: {
     REGISTER: '/auth/register',
@@ -55,7 +61,6 @@ export const API_ENDPOINTS = {
     ORDERS: '/admin/orders',
     USERS: '/admin/users'
   },
-
 
   // Cart
   CART: {
