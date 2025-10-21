@@ -14,7 +14,7 @@ import {
   Star,
   Zap,
 } from "lucide-react";
-import { PageLayout } from "../../components/page-layout";
+
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { ProductCard } from "../../components/product-card";
@@ -24,6 +24,7 @@ import { useToast } from "../../hooks/use-toast";
 import { productService } from "../../services/productService";
 import { formatPrice } from "../../lib/utils";
 import { useScrollToTop } from "../../hooks/use-scroll-to-top";
+import { PageLayout } from "../../../components/page-layout";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
