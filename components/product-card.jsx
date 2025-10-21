@@ -7,7 +7,7 @@ import { formatPrice } from "../lib/utils"
 import { useCart } from "../hooks/use-cart"
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useAuth } from "../contexts/AuthContext"
+import { useAuth } from "../src/contexts/AuthContext"
 import { useToast } from "../hooks/use-toast"
 
 export function ProductCard({ 
