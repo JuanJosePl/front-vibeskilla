@@ -1,5 +1,5 @@
 // services/categoryService.js
-import { apiClient } from './api';
+import { Client } from './';
 
 export const categoryService = {
   /**
@@ -8,7 +8,7 @@ export const categoryService = {
    */
   async getCategories() {
     try {
-      const response = await apiClient.get('/api/categories');
+      const response = await Client.get('/categories');
       return response;
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -33,7 +33,7 @@ export const categoryService = {
       const categoriesWithCount = await Promise.all(
         categoriesResponse.data.map(async (category) => {
           try {
-            const productsResponse = await apiClient.get(`/api/categories/${category._id}/products?limit=1`);
+            const productsResponse = await Client.get(`/categories/${category._id}/products?limit=1`);
             const productCount = productsResponse.success ? productsResponse.total || productsResponse.data.length : 0;
             
             return {
@@ -67,7 +67,7 @@ export const categoryService = {
    */
   async getCategoryBySlug(slug) {
     try {
-      const response = await apiClient.get(`/api/categories/${slug}`);
+      const response = await Client.get(`/categories/${slug}`);
       return response;
     } catch (error) {
       console.error('Error fetching category by slug:', error);
@@ -128,8 +128,8 @@ export const categoryService = {
         }
       });
 
-      const url = `/api/categories/${categoryId}/products?${queryParams.toString()}`;
-      const response = await apiClient.get(url);
+      const url = `/categories/${categoryId}/products?${queryParams.toString()}`;
+      const response = await Client.get(url);
       return response;
     } catch (error) {
       console.error('Error fetching products by category:', error);
@@ -168,7 +168,7 @@ export const categoryService = {
    */
   async createCategory(categoryData, token) {
     try {
-      const response = await apiClient.post('/api/categories', categoryData, token);
+      const response = await Client.post('/categories', categoryData, token);
       return response;
     } catch (error) {
       console.error('Error creating category:', error);
@@ -185,7 +185,7 @@ export const categoryService = {
    */
   async updateCategory(id, categoryData, token) {
     try {
-      const response = await apiClient.put(`/api/categories/${id}`, categoryData, token);
+      const response = await Client.put(`//categories/${id}`, categoryData, token);
       return response;
     } catch (error) {
       console.error('Error updating category:', error);
@@ -201,7 +201,7 @@ export const categoryService = {
    */
   async deleteCategory(id, token) {
     try {
-      const response = await apiClient.delete(`/api/categories/${id}`, null, token);
+      const response = await Client.delete(`/categories/${id}`, null, token);
       return response;
     } catch (error) {
       console.error('Error deleting category:', error);
