@@ -22,10 +22,10 @@ export const getHeaders = (token = null) => {
 export const API_ENDPOINTS = {
   //Categorias
    CATEGORIES: {
-    BASE: '/api/categories',
-    WITH_COUNT: '/api/categories/with-count',
-    POPULAR: '/api/categories/popular',
-    HIERARCHICAL: '/api/categories/hierarchical'
+    BASE: '/categories',
+    WITH_COUNT: '/categories/with-count',
+    POPULAR: '/categories/popular',
+    HIERARCHICAL: '/categories/hierarchical'
   },
   // Auth
   AUTH: {
