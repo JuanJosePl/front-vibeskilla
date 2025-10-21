@@ -1,5 +1,5 @@
 // services/categoryService.js
-import { apiapiClient } from './api';
+import { apiapiClient, apiClient } from './api';
 
 export const categoryService = {
   /**
@@ -33,7 +33,7 @@ export const categoryService = {
       const categoriesWithCount = await Promise.all(
         categoriesResponse.data.map(async (category) => {
           try {
-            const productsResponse = await apiapiClient.get(`/categories/${category._id}/products?limit=1`);
+            const productsResponse = await apiClient.get(`/categories/${category._id}/products?limit=1`);
             const productCount = productsResponse.success ? productsResponse.total || productsResponse.data.length : 0;
             
             return {
