@@ -222,7 +222,12 @@ export default function Header() {
         <div
           className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary via-accent to-primary transition-all duration-300"
           style={{
-            width: `${Math.min((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100, 100)}%`,
+            width: `${Math.min(
+              (window.scrollY /
+                (document.documentElement.scrollHeight - window.innerHeight)) *
+                100,
+              100
+            )}%`,
           }}
         ></div>
       </header>
@@ -235,9 +240,9 @@ export default function Header() {
         >
           {/* Mobile Menu */}
           <div
-            className="absolute top-20 left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-2xl animate-slide-in-up"
+            className="absolute top-20 left-0 right-0 bg-background border-b border-border/50 shadow-2xl animate-slide-in-up"
             onClick={(e) => e.stopPropagation()}
-          >
+          > 
             <div className="container mx-auto px-4 py-8">
               {/* Search Bar - Mobile */}
               <div className="mb-6">
