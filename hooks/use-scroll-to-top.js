@@ -12,4 +12,4 @@ export function useScrollToTop() {
       behavior: 'smooth'
     });
   }, [pathname, search]); // Se activa también con cambios en parámetros de búsqueda
-}
+} 

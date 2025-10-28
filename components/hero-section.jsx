@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,42 +12,85 @@ import {
   Sparkles,
   Star,
   Tag,
+  TrendingUp,
+  Award,
+  Package,
 } from "lucide-react";
-import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-import { productService } from "../src/services/productService";
+import { productService } from "../src//services/productService";
 import { useScrollToTop } from "../hooks/use-scroll-to-top";
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [scrollY, setScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const heroRef = useRef(null);
 
   useScrollToTop();
 
+
+
+  // Intersection Observer for fade-in animations
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+  }, []);
+
+  // Load featured products from API
+  useEffect(() => {
+    let isMounted = true;
+
     const fetchFeaturedProducts = async () => {
       try {
         const response = await productService.getFeaturedProducts();
-        if (response.success) {
+        if (isMounted && response.success && response.data) {
           setFeaturedProducts(response.data.slice(0, 4));
         }
       } catch (error) {
         console.error("Error fetching featured products:", error);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchFeaturedProducts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
+  // Auto-slide carousel
   useEffect(() => {
     if (featuredProducts.length === 0) return;
 
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % featuredProducts.length);
-    }, 5000);
+    }, 6000);
+
     return () => clearInterval(timer);
   }, [featuredProducts.length]);
 
@@ -63,246 +108,405 @@ export function HeroSection() {
     setCurrentSlide(index);
   };
 
+  // Calculate parallax transformations
+  const logoTransform = `translateY(${scrollY * 0.15}px) rotate(${
+    scrollY * 0.05
+  }deg)`;
+  const contentTransform = `translateY(${scrollY * 0.1}px)`;
+  const backgroundTransform = `translateY(${scrollY * 0.3}px)`;
+
   if (loading) {
     return (
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 min-h-[600px] flex items-center justify-center">
-        <div className="animate-pulse space-y-4 text-center">
-          <div className="h-8 w-64 bg-muted rounded-full mx-auto"></div>
-          <div className="h-4 w-96 bg-muted rounded-full mx-auto"></div>
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 min-h-[90vh] flex items-center justify-center">
+        <div className="space-y-6 text-center">
+          <div className="relative w-20 h-20 mx-auto">
+            <div className="absolute inset-0 border-4 border-primary/30 rounded-full animate-ping"></div>
+            <div className="absolute inset-0 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+          </div>
+          <div className="space-y-3">
+            <div className="h-8 w-64 bg-gradient-to-r from-muted via-muted/50 to-muted rounded-full mx-auto animate-shimmer"></div>
+            <div
+              className="h-4 w-96 max-w-full bg-gradient-to-r from-muted via-muted/50 to-muted rounded-full mx-auto animate-shimmer"
+              style={{ animationDelay: "0.2s" }}
+            ></div>
+          </div>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 theme-transition">
-      {/* Background elements mejorados */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float"></div>
+    <section
+      ref={heroRef}
+      className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 min-h-[90vh] theme-transition"
+    >
+      {/* Animated Background Elements with Parallax */}
+      <div
+        className="absolute inset-0 z-0 overflow-hidden"
+        style={{ transform: backgroundTransform }}
+      >
+        {/* Floating gradient orbs */}
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-3xl animate-float"></div>
         <div
-          className="absolute -bottom-32 -left-32 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-float"
+          className="absolute -bottom-32 -left-32 w-80 h-80 bg-gradient-to-tr from-accent/20 to-primary/10 rounded-full blur-3xl animate-float"
           style={{ animationDelay: "2s" }}
         ></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-radial from-transparent via-background/50 to-background"></div>
+        <div
+          className="absolute top-1/3 right-1/4 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-2xl animate-float"
+          style={{ animationDelay: "4s" }}
+        ></div>
+
+        {/* Grid pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+            backgroundSize: "40px 40px",
+          }}
+        ></div>
+
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background"></div>
       </div>
 
-      <div className="container mx-auto px-4 py-16 lg:py-24 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Content mejorado */}
-          <div className="space-y-8 animate-fade-in">
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3 bg-primary/10 px-4 py-2 rounded-full w-fit backdrop-blur-sm border border-primary/20">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <span className="text-sm font-semibold uppercase tracking-wide text-primary">
-                  KillaVibes Premium
-                </span>
-              </div>
+      <div className="container mx-auto px-4 py-12 lg:py-20 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left Content Section */}
+          <div
+            className={`space-y-8 transition-all duration-1000 ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}
+            style={{ transform: contentTransform }}
+          >
+            {/* Premium Badge */}
+            <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-primary/10 to-accent/10 px-5 py-3 rounded-full backdrop-blur-sm border border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group cursor-pointer">
+              <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+              <span className="text-sm font-semibold uppercase tracking-wide bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                KillaVibes Premium
+              </span>
+              <div className="h-2 w-2 rounded-full bg-primary animate-pulse"></div>
+            </div>
 
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-balance leading-tight">
+            {/* Main Heading with Gradient Text */}
+            <div className="space-y-6">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                 Tecnología que{" "}
-                <span className="gradient-text bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  vibra
+                <span className="relative inline-block">
+                  <span
+                    className="gradient-text bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer"
+                    style={{ backgroundSize: "200% auto" }}
+                  >
+                    vibra
+                  </span>
+                  <svg
+                    className="absolute -bottom-2 left-0 w-full"
+                    height="12"
+                    viewBox="0 0 200 12"
+                    fill="none"
+                  >
+                    <path
+                      d="M0 6 Q50 0, 100 6 T200 6"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      fill="none"
+                      className="text-primary opacity-50"
+                    />
+                  </svg>
                 </span>{" "}
+                <br className="hidden sm:block" />
                 contigo
               </h1>
 
-              <p className="text-lg text-muted-foreground text-pretty max-w-2xl leading-relaxed">
-                Descubre los mejores productos tecnológicos en Barranquilla.
-                Audífonos, parlantes, compresores y más con envíos gratis y
-                garantía total. Calidad que sientes, servicio que mereces.
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
+                Descubre los mejores productos tecnológicos en{" "}
+                <span className="text-primary font-semibold">Barranquilla</span>
+                . Audífonos, parlantes, compresores y más con{" "}
+                <span className="text-accent font-semibold">envíos gratis</span>{" "}
+                y garantía total.
               </p>
             </div>
 
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/productos">
-                <Button
-                  size="lg"
-                  className="btn-primary group px-8 py-3 text-base"
-                >
-                  Explorar Productos
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
+                <button className="group relative px-8 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-full font-semibold shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden w-full sm:w-auto">
+                  <span className="relative z-10 flex items-center justify-center">
+                    Explorar Productos
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </button>
               </Link>
+
               <Link to="/ofertas">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="group px-8 py-3 text-base border-2"
-                >
-                  <Tag className="mr-2 h-4 w-4" />
-                  Ver Ofertas
-                  <Sparkles className="ml-2 h-4 w-4 text-primary" />
-                </Button>
+                <button className="group px-8 py-4 bg-background border-2 border-primary text-primary rounded-full font-semibold hover:bg-primary hover:text-white transition-all duration-300 hover:scale-105 shadow-md hover:shadow-xl w-full sm:w-auto">
+                  <span className="flex items-center justify-center">
+                    <Tag className="mr-2 h-5 w-5" />
+                    Ver Ofertas
+                    <Sparkles className="ml-2 h-4 w-4 group-hover:animate-pulse" />
+                  </span>
+                </button>
               </Link>
             </div>
 
-            {/* Features mejoradas */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8">
+            {/* Feature Cards Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
               {[
                 {
                   icon: Truck,
                   title: "Envío Gratis",
-                  desc: "Barranquilla y Soledad",
-                  color: "text-blue-500",
+                  desc: "Barranquilla",
+                  color: "from-blue-500/20 to-blue-600/20",
+                  iconColor: "text-blue-500",
                 },
                 {
                   icon: Shield,
-                  title: "Garantizado",
-                  desc: "Productos originales",
-                  color: "text-green-500",
+                  title: "100% Original",
+                  desc: "Garantizado",
+                  color: "from-green-500/20 to-green-600/20",
+                  iconColor: "text-green-500",
                 },
                 {
                   icon: Clock,
-                  title: "24/7",
-                  desc: "Atención al cliente",
-                  color: "text-orange-500",
+                  title: "Soporte 24/7",
+                  desc: "Siempre activos",
+                  color: "from-orange-500/20 to-orange-600/20",
+                  iconColor: "text-orange-500",
                 },
                 {
                   icon: Zap,
                   title: "Vibra Killa",
-                  desc: "Únete a nosotros",
-                  color: "text-purple-500",
+                  desc: "Únete ya",
+                  color: "from-purple-500/20 to-purple-600/20",
+                  iconColor: "text-purple-500",
                 },
               ].map((feature, index) => (
                 <div
-                  key={index}
-                  className="flex flex-col items-center text-center space-y-2 p-4 rounded-xl bg-card/50 border border-border/50 hover-lift backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                  key={`feature-${feature.title}-${index}`}
+                  className={`group relative flex flex-col items-center text-center space-y-3 p-4 rounded-2xl bg-gradient-to-br ${feature.color} backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer overflow-hidden`}
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                    opacity: isVisible ? 1 : 0,
+                    transform: isVisible ? "translateY(0)" : "translateY(20px)",
+                    transition: "all 0.6s ease-out",
+                  }}
                 >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/10 group-hover:to-accent/10 transition-all duration-300"></div>
+
                   <div
-                    className={`h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center ${feature.color}`}
+                    className={`relative h-14 w-14 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center ${feature.iconColor} group-hover:scale-110 transition-transform duration-300 shadow-lg`}
                   >
-                    <feature.icon className="h-6 w-6" />
+                    <feature.icon className="h-7 w-7" />
                   </div>
-                  <span className="text-sm font-semibold text-foreground">
-                    {feature.title}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {feature.desc}
-                  </span>
+                  <div className="relative">
+                    <span className="text-sm font-bold text-foreground block">
+                      {feature.title}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {feature.desc}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
+
+            {/* Stats Bar */}
+            <div className="flex items-center justify-between p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 shadow-lg">
+              <div className="text-center flex-1">
+                <div className="flex items-center justify-center space-x-1">
+                  <Award className="h-5 w-5 text-primary" />
+                  <span className="text-2xl font-bold text-primary">500+</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Clientes Felices
+                </p>
+              </div>
+              <div className="h-12 w-px bg-border"></div>
+              <div className="text-center flex-1">
+                <div className="flex items-center justify-center space-x-1">
+                  <Package className="h-5 w-5 text-accent" />
+                  <span className="text-2xl font-bold text-accent">1000+</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Productos</p>
+              </div>
+              <div className="h-12 w-px bg-border"></div>
+              <div className="text-center flex-1">
+                <div className="flex items-center justify-center space-x-1">
+                  <TrendingUp className="h-5 w-5 text-green-500" />
+                  <span className="text-2xl font-bold text-green-500">98%</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Satisfacción
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Product Carousel Mejorado */}
-          <div className="relative">
-            <div className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden bg-card border border-border/50 shadow-2xl carousel-container group">
+          {/* Right Content - Product Carousel with Parallax */}
+          <div
+            className={`relative transition-all duration-1000 delay-300 ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}
+            style={{ transform: logoTransform }}
+          >
+            <div className="relative h-[450px] lg:h-[550px] rounded-3xl overflow-hidden shadow-2xl group">
+              {/* Carousel Items */}
               {featuredProducts.map((product, index) => (
                 <div
-                  key={product._id}
-                  className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${
+                  key={`product-slide-${product._id}-${index}`}
+                  className={`absolute inset-0 transition-all duration-700 ease-out ${
                     index === currentSlide
-                      ? "opacity-100 translate-x-0 scale-100 z-10"
+                      ? "opacity-100 scale-100 z-10"
                       : index < currentSlide
                       ? "opacity-0 -translate-x-full scale-95 z-0"
                       : "opacity-0 translate-x-full scale-95 z-0"
                   }`}
                 >
-                  <div className="relative h-full group">
-                    <img
-                      src={
-                        product.images?.[0]?.url || "/placeholder-product.jpg"
-                      }
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                  <div className="relative h-full">
+                    {/* Product Image */}
+                    <div className="absolute inset-0 overflow-hidden">
+                      <img
+                        src={
+                          product.images?.[0]?.url || "/placeholder-product.jpg"
+                        }
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                      />
+                      {/* Gradient Overlays */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent mix-blend-overlay"></div>
+                    </div>
 
                     {/* Product Info Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                      <div className="flex items-center gap-2 mb-2">
+                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white space-y-4">
+                      {/* Badges */}
+                      <div className="flex items-center gap-2 flex-wrap">
                         {product.isFeatured && (
-                          <div className="flex items-center gap-1 bg-primary/90 px-2 py-1 rounded-full text-xs">
-                            <Star className="h-3 w-3" />
+                          <div className="flex items-center gap-1.5 bg-gradient-to-r from-primary to-accent px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm">
+                            <Star className="h-3.5 w-3.5 fill-current" />
                             Destacado
                           </div>
                         )}
                         {product.comparePrice > product.price && (
-                          <div className="bg-red-500 px-2 py-1 rounded-full text-xs font-semibold">
+                          <div className="bg-red-500 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
                             -
                             {Math.round(
                               (1 - product.price / product.comparePrice) * 100
                             )}
-                            %
+                            % OFF
                           </div>
                         )}
+                        <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold border border-white/30">
+                          {product.category?.name || "Producto"}
+                        </div>
                       </div>
 
-                      <h3 className="text-xl font-bold mb-2 line-clamp-1">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm opacity-90 mb-4 line-clamp-2">
-                        {product.shortDescription || product.description}
-                      </p>
+                      {/* Title & Description */}
+                      <div className="space-y-2">
+                        <h3 className="text-2xl lg:text-3xl font-bold line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-white/90 line-clamp-2">
+                          {product.shortDescription || product.description}
+                        </p>
+                      </div>
 
-                      <div className="flex items-center justify-between">
+                      {/* Price & CTA */}
+                      <div className="flex items-end justify-between pt-2">
                         <div className="space-y-1">
-                          <span className="text-2xl font-bold">
-                            ${product.price.toLocaleString()} COP
-                          </span>
-                          {product.comparePrice > product.price && (
-                            <span className="text-sm line-through opacity-70 block">
-                              ${product.comparePrice.toLocaleString()} COP
+                          <div className="text-3xl font-bold">
+                            ${product.price.toLocaleString()}
+                            <span className="text-lg font-normal text-white/70 ml-2">
+                              COP
                             </span>
+                          </div>
+                          {product.comparePrice > product.price && (
+                            <div className="text-sm line-through text-white/60">
+                              ${product.comparePrice.toLocaleString()} COP
+                            </div>
                           )}
                         </div>
                         <Link to={`/productos/${product.slug}`}>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
-                          >
-                            Ver Detalles
-                          </Button>
+                          <button className="group/btn px-6 py-3 bg-white text-primary rounded-full font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                            <span className="flex items-center">
+                              Ver Detalles
+                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                            </span>
+                          </button>
                         </Link>
                       </div>
                     </div>
+
+                    {/* Corner decoration */}
+                    <div className="absolute top-6 right-6 h-16 w-16 border-t-2 border-r-2 border-white/30 rounded-tr-2xl"></div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Carousel Controls Mejorados */}
-            <Button
-              variant="secondary"
-              size="icon"
-              className="absolute left-4 top-1/2 -translate-y-1/2 glass-effect hover:bg-primary/20 backdrop-blur-sm text-foreground border-0 shadow-lg z-20"
+            {/* Carousel Navigation Buttons */}
+            <button
               onClick={prevSlide}
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 z-20 flex items-center justify-center hover:scale-110 shadow-lg"
+              aria-label="Previous slide"
             >
               <ChevronLeft className="h-6 w-6" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="absolute right-4 top-1/2 -translate-y-1/2 glass-effect hover:bg-primary/20 backdrop-blur-sm text-foreground border-0 shadow-lg z-20"
+            </button>
+            <button
               onClick={nextSlide}
+              className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 z-20 flex items-center justify-center hover:scale-110 shadow-lg"
+              aria-label="Next slide"
             >
               <ChevronRight className="h-6 w-6" />
-            </Button>
+            </button>
 
-            {/* Carousel Indicators Mejorados */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
-              {featuredProducts.map((_, index) => (
+            {/* Carousel Indicators */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
+              {featuredProducts.map((product, index) => (
                 <button
-                  key={index}
-                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                    index === currentSlide
-                      ? "bg-primary w-8 shadow-lg"
-                      : "bg-white/50 w-2 hover:w-4 hover:bg-white/70"
-                  }`}
+                  key={`slide-indicator-${product._id}-${index}`}
                   onClick={() => goToSlide(index)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === currentSlide
+                      ? "bg-white w-10 shadow-lg"
+                      : "bg-white/40 w-2 hover:w-6 hover:bg-white/70"
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
 
-            {/* Floating Elements Mejorados */}
-            <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-primary/20 animate-float backdrop-blur-sm border border-primary/30" />
+            {/* Floating decorative elements */}
+            <div className="absolute -top-6 -right-6 h-32 w-32 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 blur-2xl animate-float pointer-events-none"></div>
             <div
-              className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-accent/20 animate-float backdrop-blur-sm border border-accent/30"
+              className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-tr from-accent/30 to-primary/30 blur-2xl animate-float pointer-events-none"
               style={{ animationDelay: "1.5s" }}
-            />
+            ></div>
           </div>
         </div>
+      </div>
+
+      {/* Bottom wave decoration */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 overflow-hidden pointer-events-none">
+        <svg
+          className="absolute bottom-0 w-full h-full"
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,64 C360,20 720,20 1080,64 C1440,108 1440,108 1440,120 L0,120 Z"
+            fill="var(--background)"
+            opacity="0.5"
+          />
+          <path
+            d="M0,80 C360,40 720,40 1080,80 C1440,120 1440,120 1440,120 L0,120 Z"
+            fill="var(--background)"
+          />
+        </svg>
       </div>
     </section>
   );
